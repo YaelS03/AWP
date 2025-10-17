@@ -3,9 +3,9 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
         .then((reg) => {
             console.log('SW registrado', reg);
-            // Esperar a que el SW esté activo
+            // Esperar a que el SW este activo
             navigator.serviceWorker.ready.then(() => {
-                console.log('SW activo y controlando la página');
+                console.log('SW activo');
             });
         })
         .catch((err) => console.log('Error al registrar el SW', err));
@@ -14,9 +14,9 @@ if ('serviceWorker' in navigator) {
 // boton para verificar estado del SW
 document.getElementById('check').addEventListener('click', () => {
     if (navigator.serviceWorker.controller) {
-        alert('El SW está activo');
+        alert('El SW esta activo');
     } else {
-        alert('El SW no está activo');
+        alert('El SW no esta activo');
     }
 });
 
@@ -34,7 +34,8 @@ document.getElementById("btnNotificacion").addEventListener('click', () => {
         if (navigator.serviceWorker.controller) {
             navigator.serviceWorker.controller.postMessage('mostrar-notificacion');
         } else {
-            console.log('El SW no está activo aun');
+            console.log('El SW no esta activo aun');
         }
     });
 });
+
