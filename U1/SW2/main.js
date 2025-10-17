@@ -2,8 +2,8 @@
 
 if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('service-worker.js')
-            .then((reg) => console.Log('SW registrado', reg)
-            ).catch((err) => console.Log('Error al registrar el SW', err));
+            .then((reg) => console.log('SW registrado', reg)
+            ).catch((err) => console.log('Error al registrar el SW', err));
 
         }
 
@@ -37,4 +37,5 @@ document.getElementById("btnNotificacion").addEventListener('click', () => {
 
         console.log('El service Worker no esta activo aun');
     }
+
 });
