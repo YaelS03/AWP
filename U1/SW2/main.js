@@ -14,7 +14,7 @@ if ('serviceWorker' in navigator) {
 // boton para verificar estado del SW
 document.getElementById('check').addEventListener('click', () => {
     if (navigator.serviceWorker.controller) {
-        alert('El SW esta activo');
+        alert('El SW esta activo y controlando la pagina actual');
     } else {
         alert('El SW no esta activo');
     }
@@ -38,5 +38,6 @@ document.getElementById("btnNotificacion").addEventListener('click', () => {
         }
     });
 });
+
 
 
