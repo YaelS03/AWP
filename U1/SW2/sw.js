@@ -1,48 +1,40 @@
-// Nombre del cache actual (identificador único)
-const CACHE_NAME = "mi-app-cache-v1";
+//Nombre de la cache
+const cacheName = 'mi-cache-v2';
 
-// Lista de archivos que se guardarán en caché (usando rutas absolutas)
-const urlsToCache = [
-    "./",               // Página principal
-    "./index.html",     // Documento raíz
-    "./styles.css",     // Hoja de estilos
-    "./app.js",         // Script principal
-    "./logo.png"        // Imagen/logo
+//Archivos que se guardaran en cache
+const cacheAssets = [
+    'index.html',
+    'pagina1.html',
+    'pagina2.html',
+    'offline.html',
+    'style.css',
+    'main.js',
+    'icono.png'
 ];
 
-// Evento de instalación
-self.addEventListener("install", (event) => {
-    console.log("SW: Instalado");
-
+//Instalación del Service Worker
+self.addEventListener('install', (event) => {
+    console.log('SW: Instalado');
     event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then((cache) => {
-                console.log("SW: Cacheando archivos...");
-                return cache.addAll(urlsToCache);
-            })
-            .catch((error) => {
-                console.error("SW: Error al cachear archivos:", error);
-            })
-            
+        caches.open(cacheName)
+        .then((cache) => {
+            console.log('SW: Cacheando archivos...');
+            return cache.addAll(cacheAssets);
+        })
+        .then(() => self.skipWaiting())
+        .catch((err) => console.log('Error al cachear archivos:', err))
     );
-    self.ServiceWorkerRegistration.showNotification("Service Worker Activo."),
-    {
-        body: "El cahe inicial se configuró correctamente.",
-        icon: "/logo.png",
-    }
-
 });
 
-// Evento de activación
-self.addEventListener("activate", (event) => {
-    console.log("SW: Activado");
-
+//Activación del Service Worker
+self.addEventListener('activate', (event) => {
+    console.log('SW: Activado');
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames.map((cache) => {
-                    if (cache !== CACHE_NAME) {
-                        console.log("SW: Cache viejo eliminado:", cache);
+                    if (cache !== cacheName) {
+                        console.log(`SW: Eliminando cache antigua: ${cache}`);
                         return caches.delete(cache);
                     }
                 })
@@ -51,20 +43,43 @@ self.addEventListener("activate", (event) => {
     );
 });
 
-// Evento de intercepción de peticiones
-self.addEventListener("fetch", (event) => {
-    event.respondWith(
-        caches.match(event.request).then((response) => {
-            // Retorna desde cache si está disponible, si no, desde la red
-            return response || fetch(event.request);
-        })
-    );
+//Escuchar mensajes desde la página
+self.addEventListener('message', (event) => {
+    console.log('SW recibio:', event.data);
+    if (event.data === 'mostrar-notificacion') {
+        self.registration.showNotification('Notificación Local', {
+            body: 'Esta es una prueba de notificación sin servidor push.',
+            icon: 'icono.png'
+        });
+    }
 });
-// Para mostrar notificaciones (esto se llama desde tu app principal, no desde el SW)
-self.addEventListener("notificationclick", (event) => {
-    event.notification.close();
-    // Aquí puedes manejar el clic en la notificación
-    event.waitUntil(
-        clients.openWindow('/') // Abre la app principal
+
+//Manejar peticiones de red con fallback offline
+self.addEventListener('fetch', (event) => {
+    //Ignorar peticiones innecesarias como extensiones o favicon
+    if (event.request.url.includes('chrome-extension') || event.request.url.includes('favicon.ico')) {
+        return;
+    }
+
+    event.respondWith(
+        fetch(event.request)
+        .then((response) => {
+            //Si la respuesta es válida, la devuelve y guarda en cache dinámico
+            const clone = response.clone();
+            caches.open(cacheName).then((cache) => cache.put(event.request, clone));
+            return response;
+        })
+        .catch(() => {
+            //Si no hay red, buscar en cache
+            return caches.match(event.request).then((response) => {
+                if (response) {
+                    console.log('SW: Recurso desde cache', event.request.url);
+                    return response;
+                } else {
+                    console.warn('SW: Mostrando página offline.');
+                    return caches.match('offline.html');
+                }
+            });
+        })
     );
 });
