@@ -5,7 +5,7 @@ if ('serviceWorker' in navigator) {
             console.log('SW registrado', reg);
             // Esperar a que el SW este activo
             navigator.serviceWorker.ready.then(() => {
-                console.log('SW activo');
+                console.log('SW está Activo y controlando la pagina actual');
             });
         })
         .catch((err) => console.log('Error al registrar el SW', err));
@@ -38,4 +38,5 @@ document.getElementById("btnNotificacion").addEventListener('click', () => {
         }
     });
 });
+
 
