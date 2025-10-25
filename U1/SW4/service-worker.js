@@ -3,17 +3,17 @@ const CACHE_DYNAMIC = 'sw4-dynamic-v3';
 
 
 const assets = [
-  './',
-  './index.html',
-  './pagina1.html',
-  './pagina2.html',
-  './pagina3.html',
-  './styles.css',
-  './main.js',
-  './imagen1.jpg',
-  './imagen2.jpeg',
-  './imagen3.jpg',
-  './logo.png'
+  '/SW4/',
+  '/SW4/index.html',
+  '/SW4/pagina1.html',
+  '/SW4/pagina2.html',
+  '/SW4/pagina3.html',
+  '/SW4/styles.css',
+  '/SW4/main.js',
+  '/SW4/imagen1.jpg',
+  '/SW4/imagen2.jpeg',
+  '/SW4/imagen3.jpg',
+  '/SW4/logo.png'
 ];
 
 // Precargar los assets
@@ -89,3 +89,4 @@ self.addEventListener('message', (event) => {
     });
   }
 });
+
