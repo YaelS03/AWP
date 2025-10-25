@@ -1,6 +1,6 @@
 //Verificar soporte de Service Workers
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/AWP/U1/SW4/service-worker.js')
+    navigator.serviceWorker.register('/SW4/service-worker.js')
         .then(reg => console.log("Service Worker registrado:", reg))
         .catch(err => console.log("Error al registrar el SW:", err));
 }
@@ -34,3 +34,4 @@ document.getElementById("btnMostrar").addEventListener("click", async () => {
         alert("El SW no está registrado aún");
     }
 });
+
